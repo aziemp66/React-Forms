@@ -1,33 +1,18 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
-  const [isCorrectInput, setIsCorrectInput] = useState(true);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
+  const enteredNameIsValid = enteredName.length > 0;
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
+
   const nameInputChangedHandler = (event) => {
-    const { value } = event.target;
-    const input = value.trim();
-
-    if (input === "" || input.length < 1) {
-      setIsCorrectInput(false);
-    } else {
-      setIsCorrectInput(true);
-    }
-
-    setEnteredName(input);
+    setEnteredName(event.target.value.trim());
   };
 
-  const nameInputBlurHandler = (event) => {
+  const nameInputBlurHandler = () => {
     setEnteredNameTouched(true);
-    const { value } = event.target;
-    const input = value.trim();
-
-    if (input === "" || input.length < 1) {
-      setIsCorrectInput(false);
-    } else {
-      setIsCorrectInput(true);
-    }
   };
 
   const formSubmitHandler = (event) => {
@@ -35,15 +20,13 @@ const SimpleInput = (props) => {
 
     setEnteredNameTouched(true);
 
-    if (enteredName === "" || enteredName.length < 1) {
-      return setIsCorrectInput(false);
+    if (!enteredNameIsValid) {
+      return;
     }
-    setIsCorrectInput(true);
 
     setEnteredName("");
+    setEnteredNameTouched(false);
   };
-
-  const nameInputIsInvalid = !isCorrectInput && enteredNameTouched;
 
   return (
     <form onSubmit={formSubmitHandler}>
