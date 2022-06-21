@@ -1,32 +1,46 @@
 import { useRef, useState } from "react";
 
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
+  const [isCorrectInput, setIsCorrectInput] = useState(true);
 
   const nameInputChangedHandler = (event) => {
-    setEnteredName(event.target.value);
+    const { value } = event.target;
+    const input = value.trim();
+
+    if (input === "" || input.length < 1) {
+      setIsCorrectInput(false);
+    } else {
+      setIsCorrectInput(true);
+    }
+
+    setEnteredName(input);
   };
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
-    alert(enteredName);
-    const enteredValue = nameInputRef.current.value;
-    console.log(enteredValue);
+
+    if (enteredName === "" || enteredName.length < 1) {
+      return setIsCorrectInput(false);
+    }
+    setIsCorrectInput(true);
+
     setEnteredName("");
   };
 
   return (
     <form onSubmit={formSubmitHandler}>
-      <div className="form-control">
+      <div className={`form-control ${!isCorrectInput && `invalid`}`}>
         <label htmlFor="name">Your Name</label>
         <input
           type="text"
           id="name"
           value={enteredName}
           onChange={nameInputChangedHandler}
-          ref={nameInputRef}
         />
+        {!isCorrectInput && (
+          <p className="error-text">Name Must Not Be Empty</p>
+        )}
       </div>
       <div className="form-actions">
         <button>Submit</button>
